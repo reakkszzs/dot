@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tentang kitaa ❤️</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* css */
+        :root {
+            --primary: #d46a6a;
+            --secondary: #f4a261;
+            --bg-color: #fdf2e9;
+            --card-bg: #ffffff;
+            --text-box-bg: #fff8f0;
+            --text-color: #555;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: var(--bg-color);
+            overflow-x: hidden; min-height: 100vh;
+        }
+
+        /* Layar Pembuka (Intro) - Sama seperti sebelumnya */
+        #intro {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%);
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            z-index: 1000; transition: opacity 1s ease;
+        }
+        #intro h1 { font-family: 'Dancing Script', cursive; font-size: 3rem; color: white; margin-bottom: 20px; text-shadow: 2px 2px 4px rgba(0,0,0,0.1); }
+        .btn-start { padding: 15px 40px; background: white; color: var(--primary); border: none; border-radius: 50px; font-size: 1.2rem; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: transform 0.3s ease; }
+        .btn-start:hover { transform: scale(1.1); }
+
+        /* konten Utama */
+        #main-content {
+            display: none; opacity: 0; transition: opacity 2s ease;
+            padding: 40px 20px; max-width: 1000px; margin: 0 auto;
+            position: relative; min-height: 80vh; display: flex; align-items: center;
+        }
+
+        /* slidder container */
+        .slider-container {
+            position: relative; width: 100%;
+        }
+
+        .slide {
+            display: none; /* Hide all slides by default */
+            animation: fadeEffect 1s; /* Fading effect */
+        }
+        
+        .slide.active {
+            display: block; /* Show active slide */
+        }
+
+        @keyframes fadeEffect {
+            from {opacity: 0.4} to {opacity: 1}
+        }
+
+        /* Layout Side-by-Side Flexbox */
+        .slide-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 40px;
+            background: rgba(255, 255, 255, 0.6);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            backdrop-filter: blur(5px);
+        }
+
+        /* --- SISI POLAROID --- */
+        .polaroid-side {
+            flex: 1; max-width: 400px; position: relative;
+        }
+        .polaroid {
+            background: var(--card-bg); padding: 15px; padding-bottom: 50px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            transform: rotate(-2deg); transition: transform 0.3s ease;
+            position: relative;
+        }
+        .polaroid:hover { transform: rotate(0deg) scale(1.02); }
+        .polaroid img { width: 100%; height: auto; aspect-ratio: 1/1; object-fit: cover; border-radius: 2px; filter: sepia(15%); }
+        .photo-caption { position: absolute; bottom: 15px; left: 0; width: 100%; text-align: center; font-family: 'Dancing Script', cursive; color: #777; font-size: 1.3rem; }
+        
+        /* EMOTE LUCU DI AREA FOTO */
+        .cute-emoji {
+            position: absolute; top: -15px; right: -15px;
+            font-size: 3rem; z-index: 5;
+            filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.2));
+            animation: wiggle 3s ease-in-out infinite;
+        }
+        @keyframes wiggle { 0%, 100% { transform: rotate(-10deg); } 50% { transform: rotate(10deg); } }
+
+        /* --- SISI TEKS CERITA --- */
+        .text-side {
+            flex: 1.2;
+            background: var(--text-box-bg);
+            padding: 30px;
+            border-radius: 15px;
+            border: 2px dashed var(--primary);
+            position: relative;
+        }
+        .text-side::before { /* Hiasan "selotip" */
+            content: ''; position: absolute; top: -10px; left: 50%; transform: translateX(-50%);
+            width: 60px; height: 20px; background: rgba(212, 106, 106, 0.3); transform: rotate(-2deg);
+        }
+        .story-title { font-family: 'Dancing Script', cursive; font-size: 2.5rem; color: var(--primary); margin-bottom: 15px; }
+        .story-date { font-weight: 700; color: var(--secondary); margin-bottom: 15px; display: block; font-size: 0.9rem; letter-spacing: 1px; }
+        .story-body { line-height: 1.8; font-size: 1.1rem; color: var(--text-color); }
+
+        /* --- NAVIGASI SLIDER --- */
+        .nav-btn {
+            position: absolute; top: 50%; transform: translateY(-50%);
+            font-size: 3rem; color: var(--primary); background: rgba(255,255,255,0.8);
+            border: none; padding: 10px 15px; border-radius: 50%; cursor: pointer; z-index: 10;
+            transition: all 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .nav-btn:hover { background: var(--primary); color: white; }
+        .prev-btn { left: -20px; }
+        .next-btn { right: -20px; }
+
+        /* Responsive untuk HP */
+        @media (max-width: 768px) {
+            .slide-content { flex-direction: column; padding: 20px; gap: 20px; }
+            .polaroid-side, .text-side { flex: auto; width: 100%; max-width: 100%; }
+            .polaroid img { height: 300px; } /* Tinggi tetap di HP */
+            .nav-btn { font-size: 2rem; padding: 5px 10px; background: rgba(255,255,255,0.9); }
+            .prev-btn { left: -10px; } .next-btn { right: -10px; }
+            #main-content { padding-top: 10px; align-items: flex-start; }
+        }
+
+        /* Animasi Background (Hati berterbangan) - Sama */
+        .bg-hearts { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: -1; overflow: hidden; }
+        .heart { position: absolute; bottom: -100px; background-color: rgba(255, 100, 100, 0.2); border-radius: 50%; animation: floatUp 15s linear infinite; }
+        @keyframes floatUp { 0% { transform: translateY(0); opacity: 0; } 50% { opacity: 0.8; } 100% { transform: translateY(-100vh); opacity: 0; } }
+    </style>
+</head>
+<body>
+    <audio id="bg-music" loop><source src="potograp.mp3" type="audio/mp3"></audio>
+    <div id="intro">
+        <h1>halo sayangkuu... 🥰💗</h1>
+        <p style="color: white; margin-bottom: 20px;">aku ada sesuatu buat sayanggg.</p>
+        <button class="btn-start" onclick="startExperience()">klik ini dulu sayang yaa😉✌️</button>
+    </div>
+    <div class="bg-hearts" id="hearts-container"></div>
+
+    <div id="main-content">
+        <div class="slider-container">
+            
+            <div class="slide active">
+                <div class="slide-content">
+                    <div class="polaroid-side">
+                        <span class="cute-emoji">🥰</span>
+                        <div class="polaroid">
+                            <img src="poto4.jpg" alt="Foto 4">
+                            <div class="photo-caption">awal cerita</div>
+                        </div>
+                    </div>
+                    <div class="text-side">
+                        <h2 class="story-title">hari pertama kita jadian</h2>
+                        <span class="story-date">14 Nov 2025</span>
+                        <p class="story-body">
+                            ini pertama kita jalan yangg, seneng banget akuu walau deg deg an dikit, sambil lupa kunci motor ketinggalan di motor hehe.
+                            btw cantik banget mata kamu tauu.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="slide">
+                <div class="slide-content">
+                    <div class="polaroid-side">
+                        <span class="cute-emoji">🥺🎬</span>
+                        <div class="polaroid">
+                            <img src="poto2.jpg" alt="Foto 2">
+                            <div class="photo-caption">tatapannya...</div>
+                        </div>
+                    </div>
+                    <div class="text-side">
+                        <h2 class="story-title">Yeay kita nontonn </h2>
+                        <span class="story-date">kita nonton bisokopp</span>
+                        <p class="story-body">
+                            first time aku bisa nonton sama orang yg paling aku sayangg, jujur aku ga pernah nonton bioskop berdua sm siapapu,
+                            biasanya banyak dan akhirnya bisa sama sayangg, sayang cantik dan wangi sekeali rambutnya, pipi na gemas pen cium teruss xixixi.
+                    </div>
+                </div>
+            </div>
+
+            <div class="slide">
+                <div class="slide-content">
+                    <div class="polaroid-side">
+                        <span class="cute-emoji">🤪</span>
+                        <div class="polaroid">
+                            <img src="poto3.jpg" alt="Foto 3">
+                            <div class="photo-caption">edisi potobut agii</div>
+                        </div>
+                    </div>
+                    <div class="text-side">
+                        <h2 class="story-title">kita lucu sekali</h2>
+                        <span class="story-date">kita poto agii yeayy</span>
+                        <p class="story-body">
+                            kitaa disini potobut yg kedua kalinya yang yaaa? mutar muter abis nonton di potobut situ ga bisa kes wakakak,
+                            tapii aku senang sekali bisa menghabiskan setiap langkah dan usia aku bareng sayanggg aku tida pernah merasakan semua inii😔.
+                            i love u sayangg, jangan pernah bosen sama aku yaa kita lalui badai bersama 😉🥰💗🩶
+                    </div>
+                </div>
+            </div>
+
+            <div class="slide">
+                <div class="slide-content">
+                    <div class="polaroid-side">
+                        <span class="cute-emoji">🚢</span>
+                        <div class="polaroid">
+                            <img src="poto1.jpg" alt="Foto 1">
+                            <div class="photo-caption">naek kelotok</div>
+                        </div>
+                    </div>
+                    <div class="text-side">
+                        <h2 class="story-title">partner hidup akuh</h2>
+                        <span class="story-date">tiap jumat kita apa?</span>
+                        <p class="story-body">
+                            INI AKU FIRST TAIM NAIK KELOTOKKKK. seram dikit takut goyang dan jatohh tapi ada sayang yg selalu nenangin akuu,
+                            aku selalu megang tangan sayang kan,dan ciumm pipi sayangg, abis tuu sayang kena sinar matahari 😔,
+                            tida apa ada akuu, SENANG SEKALII abis itu aku mual dan muntah dan pake tas sayangg hihi 🤗✌️.
+                            kita tetap harus terus bareng sayang yaa sampai merit yeayy😘🤵👰‍♀️
+                        </p>
+                    </div>
+                </div>
+            </div> 
+            
+            <div class="slide">
+                <div class="slide-content">
+                    <div class="polaroid-side">
+                        <span class="cute-emoji">🥰💗</span>
+                        <div class="polaroid">
+                            <img src="poto5.jpg" alt="Foto 3">
+                            <div class="photo-caption">sayang sangat cantik seklalii</div>
+                        </div>
+                    </div>
+                    <div class="text-side">
+                        <h2 class="story-title">sayang sangat caantik</h2>
+                        <span class="story-date">indah sekali mata sayang</span>
+                        <p class="story-body">
+                            tak bisa terbendung lagi dengan kata kata kamu selalu cantik dan sempurna 
+                    </div>
+                </div>
+            </div>
+
+            <div class="slide">
+    <div class="slide-content">
+        <div class="polaroid-side">
+            <span class="cute-emoji">🍜🍽️</span>
+            <div class="polaroid">
+                <video width="100%" autoplay loop muted playsinline style="border-radius: 2px; object-fit: cover; aspect-ratio: 1/1;">
+                    <source src="vid1.mp4" type="video/mp4">
+                    Browser kamu tidak mendukung video.
+                </video>
+                <div class="photo-caption">mam nasgorr</div>
+            </div>
+        </div>
+        <div class="text-side">
+            <h2 class="story-title">Edisi makann nagsor</h2>
+            <span class="story-date">nasgor lampu merah</span>
+            <p class="story-body">
+                setelah muter sana sini cari mi yayam 🍜 tutup terus ga ada yg buka, tuhan tidak merestui kita untuk makan
+                mi yayam di hari jumatt. tapii akhirnya kita beli nasgor goreng ini di deket lampu merahh, harusnya 2/10 karena makannya sama sayang
+                7/10.berminyak kek ga niat masaknya, terus itu sayang gi haid hari ke 2. ada rambut di minuman sayang tapi tetap aku minum dan,
+                abisin makanan sayang walau keaadan mual karena naek kelotok. kalo kata sayang mah aku kek suami siaga 🤭.
+            </p>
+        </div>
+    </div>
+</div>
+
+<div class="slide">
+    <div class="slide-content">
+        <div class="polaroid-side">
+            <span class="cute-emoji">📸📍</span>
+            <div class="polaroid">
+                <video width="100%" autoplay loop muted playsinline style="border-radius: 2px; object-fit: cover; aspect-ratio: 1/1;">
+                    <source src="vid2.mp4" type="video/mp4">
+                    Browser kamu tidak mendukung video.
+                </video>
+                <div class="photo-caption">Potobut 2</div>
+            </div>
+        </div>
+        <div class="text-side">
+            <h2 class="story-title"> versi video</h2>
+            <span class="story-date">cantik sekali perempuan kota ini</span>
+            <p class="story-body">
+                ini persi videonya ges, singkat saja GEMASSSS
+            </p>
+        </div>
+    </div>
+</div>
+
+<div class="slide">
+    <div class="slide-content">
+        <div class="polaroid-side">
+            <span class="cute-emoji">🤖🧸</span>
+            <div class="polaroid">
+                <video width="100%" autoplay loop muted playsinline style="border-radius: 2px; object-fit: cover; aspect-ratio: 1/1;">
+                    <source src="vid3.mp4" type="video/mp4">
+                    Browser kamu tidak mendukung video.
+                </video>
+                <div class="photo-caption">toys kingdom date</div>
+            </div>
+        </div>
+        <div class="text-side">
+            <h2 class="story-title"></h2>
+            <span class="story-date">mencari batman</span>
+            <p class="story-body">
+                udah mager ke kidz station ga ada yg baru ga ada batman elek sekali, tapi kata sayang
+                "coba ke toyskingdom liat dulu", akhirnya ke situ n yap amaze, amaze karena apa? ADA BATMAN NJIR FONDJOY.
+            </p>
+        </div>
+    </div>
+</div>
+
+<div class="slide">
+    <div class="slide-content">
+        <div class="polaroid-side">
+            <span class="cute-emoji">🏍️</span>
+            <div class="polaroid">
+                <video width="100%" autoplay loop muted playsinline style="border-radius: 2px; object-fit: cover; aspect-ratio: 1/1;">
+                    <source src="vid4.mp4" type="video/mp4">
+                    Browser kamu tidak mendukung video.
+                </video>
+                <div class="photo-caption">menuju ke rumah ke 2 nya sayang</div>
+            </div>
+        </div>
+        <div class="text-side">
+            <h2 class="story-title">kita kemanaa?</h2>
+            <span class="story-date"></span>
+            <p class="story-body">
+                kita memutuskan ke rumah keduanya sayang, yaitu apa? yap mall disini maacett banget, ternyata kami baru inget kalo lagi ada konser rezky febrian,
+                disini aku dimarahin terus karena bawa motornya ugal ugalan wakakak.
+            </p>
+        </div>
+    </div>
+</div>
+
+<div class="slide">
+    <div class="slide-content">
+        <div class="polaroid-side">
+            <span class="cute-emoji">🥰💗</span>
+            <div class="polaroid">
+                <video width="100%" autoplay loop muted playsinline style="border-radius: 2px; object-fit: cover; aspect-ratio: 1/1;">
+                    <source src="vid5.mp4" type="video/mp4">
+                    Browser kamu tidak mendukung video.
+                </video>
+                <div class="photo-caption">Bonus dahh</div>
+            </div>
+        </div>
+        <div class="text-side">
+            <h2 class="story-title">Makan es buah</h2>
+            <span class="story-date">23 Des 2025</span>
+            <p class="story-body">
+                kataa sayangg disini sayang sama abah suka banget beli esbuah berduaa jadi kemana mana klo sama abah sayang suka kesini kalo kata abah "jangan kasih tau mama tia ya, kita bedua aja" aku ngakak banget ges,
+                sesayang itu abah samaa pacar ku inii emang cinta pertamanya anak perempuan itu ayahnya.
+                esbuah ini sederhana bangett yg paling spesial disini sayang ngasih aku yg tak terbendung besar banget dan terharu banget bacanya ges lihatlah betapa indahnya mata pacarku ini.
+                mau tau? cek slide berikutnya wokwokwo.
+            </p>
+        </div>
+    </div>
+</div>
+
+<div class="slide">
+                <div class="slide-content">
+                    <div class="polaroid-side">
+                        <span class="cute-emoji">💗💗💗</span>
+                        <div class="polaroid">
+                            <img src="poto6.jpg" alt="Foto 6">
+                            <div class="photo-caption">ini dia</div>
+                        </div>
+                    </div>
+                    <div class="text-side">
+                        <h2 class="story-title">Hadiah termewah</h2>
+                        <span class="story-date">terimakasih sayanggkuu banyak banaykk</span>
+                        <p class="story-body">
+                            jujur campur aduk rasanya intinya, sangat bahagiaa dann menangis bahagia.
+                            besoknya sakit ges karena keujanan HEHE.gapapa yg penting ada obat dari sayang.
+                    </div>
+                </div>
+            </div>
+
+            <div class="slide">
+                <div class="slide-content">
+                    <div class="polaroid-side">
+                        <span class="cute-emoji">🥰💗</span>
+                        <div class="polaroid">
+                            <img src="poto7.jpg" alt="Foto 7">
+                            <div class="photo-caption">anak kami ges</div>
+                        </div>
+                    </div>
+                    <div class="text-side">
+                        <h2 class="story-title">sayang asepp</h2>
+                        <span class="story-date"></span>
+                        <p class="story-body">
+                            namanya aseppp, asep sangat sayang dengan mamah 🧸🥰
+                    </div>
+                </div>
+            </div>
+            <button class="nav-btn prev-btn" onclick="changeSlide(-1)">&#10094;</button>
+            <button class="nav-btn next-btn" onclick="changeSlide(1)">&#10095;</button>
+
+        </div> <footer style="position: absolute; bottom: 10px; width: 100%; text-align: center; color: #999; font-size: 0.8rem;">
+            dibuat dengan ❤️, khusus buat sayangg.
+        </footer>
+    </div>
+
+    <script>
+        // --- JAVASCRIPT ---
+        let currentSlide = 0;
+        const slides = document.getElementsByClassName("slide");
+
+        // Fungsi Memulai (Play Music & Show Content)
+        function startExperience() {
+            const music = document.getElementById('bg-music');
+            document.getElementById('intro').style.opacity = '0';
+            music.volume = 0.5;
+            music.play().catch(e => console.log("Audio perlu interaksi"));
+
+            setTimeout(() => {
+                document.getElementById('intro').style.display = 'none';
+                const main = document.getElementById('main-content');
+                main.style.display = 'flex';
+                void main.offsetWidth; main.style.opacity = '1';
+                createHearts();
+                showSlide(currentSlide); // Tampilkan slide pertama
+            }, 1000);
+        }
+
+        // Fungsi Ganti Slide
+        function changeSlide(n) {
+            showSlide(currentSlide += n);
+        }
+
+        // Fungsi Tampilkan Slide Logika Utama
+        function showSlide(n) {
+            if (n >= slides.length) { currentSlide = 0 }
+            if (n < 0) { currentSlide = slides.length - 1 }
+            
+            // Sembunyikan semua slide
+            for (let i = 0; i < slides.length; i++) {
+                slides[i].classList.remove("active");
+            }
+            // Tampilkan slide yang aktif
+            slides[currentSlide].classList.add("active");
+        }
+
+        // Fungsi Membuat Hati Background (Sama seperti sebelumnya)
+        function createHearts() {
+            const container = document.getElementById('hearts-container');
+            for (let i = 0; i < 20; i++) {
+                const heart = document.createElement('div'); heart.classList.add('heart');
+                const size = Math.random() * 20 + 10 + 'px';
+                heart.style.width = size; heart.style.height = size;
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.animationDuration = Math.random() * 5 + 10 + 's';
+                heart.style.animationDelay = Math.random() * 5 + 's';
+                container.appendChild(heart);
+            }
+        }
+    </script>
+</body>
+</html>
